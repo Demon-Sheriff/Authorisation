@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const z = require('zod');
 
 const port = process.env.PORT || 3000;
 
@@ -46,8 +47,8 @@ app.post('/signin', (req, res) => {
         }
         else{
 
-            res.json({
-                message : "Wrong password entered, please try again."
+            res.status(403).send({
+                message: "Invalid username or password"
             })
         }
     }
