@@ -24,13 +24,31 @@ const generateToken = () => {
 app.get('/users', (req, res) => {
 
     const usersObject = Object.fromEntries(users);
-    
-    // Send the JSON response
     res.json(usersObject);
+})
+
+// see the user info
+app.get('/me', (req, res) => {
+
+    const token = req.header.token;
+    const foundUser = null;
+
+    for(let key in Object.entries(users)){
+
+        if(key.token === token){
+            foundUser = key;
+            break;
+        }
+    }
+
+    if(foundUser){
+        res.json(users.get[foundUser]);
+    }
 })
 
 // signin route
 app.post('/signin', (req, res) => {
+
     const body = req.body;
     username = body.username;
     password = body.password;
@@ -46,7 +64,7 @@ app.post('/signin', (req, res) => {
             })
         }
         else{
-
+            
             res.status(403).send({
                 message: "Invalid username or password"
             })
@@ -57,7 +75,7 @@ app.post('/signin', (req, res) => {
             message : "User does not exist, please sign-up first."
         })
     }
-})
+});
 
 // signup route
 app.post('/signup', (req, res) => {
