@@ -22,6 +22,23 @@ const generateToken = () => {
     return token;
 }
 
+// auth middleware.
+const auth = (req, res, next) => {
+    const token = req.headers.token;
+    const decodedInfo = jwt.verify(token, JWT_SECRET);
+
+    // if the username is valid.
+    if(decodedInfo.username){
+        req.username = decodedInfo.username;
+        next(); // call the next middleware.
+    }
+    else{
+        res.json({
+            message : "You are not logged in, Please login first."
+        })
+    }
+}
+
 // see all users
 app.get('/users', (req, res) => {
 
@@ -30,17 +47,14 @@ app.get('/users', (req, res) => {
 })
 
 // see the user info
-app.get('/me', (req, res) => {
+app.get('/me', auth, (req, res) => {
 
-    const token = req.headers.token;
-    console.log(token);
-    const decodedInfo = jwt.verify(token, JWT_SECRET);
-    const userName = decodedInfo.username; 
+    // const userName = decodedInfo.username; 
 
-    if(users.has(userName)){
+    if(users.has(req.username)){
         res.json({
-            username : userName,
-            userPassWord : users.get(username)
+            username : req.username,
+            userPassWord : users.get(req.username)
         });
     }
     else{
