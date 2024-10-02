@@ -22,8 +22,18 @@ const generateToken = () => {
     return token;
 }
 
+// logger middleware
+const logger = (req, res, next) => {
+    const method = req.method;
+    const date = new Date();
+
+    console.log(`${method} request made at date ${date.toLocaleDateString()} and time ${date.toLocaleTimeString()}`)
+    next();
+}
+
 // auth middleware.
 const auth = (req, res, next) => {
+
     const token = req.headers.token;
     const decodedInfo = jwt.verify(token, JWT_SECRET);
 
@@ -38,6 +48,8 @@ const auth = (req, res, next) => {
         })
     }
 }
+
+app.use(logger);
 
 // see all users
 app.get('/users', (req, res) => {
